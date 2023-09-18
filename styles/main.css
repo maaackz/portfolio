@@ -1,0 +1,351 @@
+@import url('https://fonts.googleapis.com/css2?family=Days One&display=swap');
+
+@keyframes squiggly {
+    0% {
+        filter: url('#squiggly-0');
+    }
+    25% {
+        filter: url('#squiggly-1');
+    }
+    50% {
+        filter: url('#squiggly-2');
+    }
+    75% {
+        filter: url('#squiggly-3');
+    }
+    100% {
+        filter: url('#squiggly-4');
+    }
+}
+
+:root {
+    --color-primary: white;
+    --color-secondary: #909090;
+    --color-tertiary: #333;
+    --font-size-tiny: 16px;
+    --font-size-small: 24px;
+    --font-size-medium: 36px;
+    --font-size-big: 48px;
+    --font-size-large: 96px;
+    --squiggly: squiggly 0.5s linear infinite;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-family: "Days One", sans-serif;
+    font-weight: 100;
+    letter-spacing: -0.15rem;
+}
+
+html {
+    overflow-x: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+}
+
+html,body {
+    font-family: "Days One", sans-serif;
+}
+
+body {
+    background: black;
+    color: white;
+}
+
+header {
+    display: flex;
+    width: 100vw;
+    height: 12vh;
+    position: fixed;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    z-index: 999;
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+button {
+    border: none;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+.nowrap {
+    display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.home * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: var(--font-size-big);
+    letter-spacing: -0.35rem;
+}
+
+.job {
+    color: var(--color-secondary);
+}
+
+
+nav .link {
+    font-size: var(--font-size-medium);
+    color: var(--color-tertiary);
+}
+
+nav .link:hover {
+    color: var(--color-secondary);
+}
+
+.font-size-small {
+    font-size: var(--font-size-small);
+}
+
+.font-size-medium {
+    font-size: var(--font-size-medium);
+}
+
+.font-size-big {
+    font-size: var(--font-size-big);
+}
+
+.font-size-large {
+    font-size: var(--font-size-large);
+}
+
+.label {
+    color: var(--color-secondary);
+    font-size: var(--font-size-large);
+    letter-spacing: -0.45rem;
+}
+
+.description { 
+    font-size: var(--font-size-small);
+    margin-bottom: 5vh;
+}
+
+main {
+    width: 100vw;
+}
+
+#hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+
+.hero-button {
+    display: inline-flex;
+    align-items: center;
+    border: 6px solid white;
+    font-size: var(--font-size-medium);
+    background: none;
+    color: white;
+    padding: 20px 40px;
+    height: 100px;
+}
+
+.hero-button-arrow {
+    height: 100%;
+    margin-left: 25px
+}
+
+.hero-button:hover {
+    background-color: white;
+    border-color: black;
+}
+
+.hero-button-text::before {
+    content: "i make stuff.";
+}
+
+.hero-button:hover .hero-button-text::before {
+    content: '';
+}
+
+.hero-button:hover .hero-button-text::after {
+    content: 'check it out.';
+}
+
+.hero-button:hover .hero-button-arrow {
+   rotate: 90deg
+}
+
+.hero-button:hover * {
+    color: black;
+    fill: black;
+}
+
+#about {
+    width: 100%;
+    height: 100vh;
+    
+}
+
+.carousel {
+    display: inline-block;
+    white-space: nowrap;
+    width: 100vw;
+    height: 40vh;
+}
+
+.carousel img {
+    border: 6px solid white;
+    margin-left: -4px;
+    height: 100%;
+    filter:saturate(.20)
+}
+
+.carousel img:hover {
+    filter: saturate(0.8)
+}
+
+#work {
+
+}
+
+.projects {
+    display: flex;
+    justify-content: center;
+    margin-top: 5vh;
+    flex-wrap: wrap;
+    flex: 0 0 100%;
+}
+
+.project {
+    width: 283px;
+    height: 314px;
+    flex-shrink: 0;
+    border: 10px solid white;
+    margin-bottom: 5vh;
+    margin-left: 2vw;
+    margin-right: 2vw;
+}
+
+.project .preview {
+    display: block;
+    position: absolute;
+    height: 224px;
+    filter: saturate(0.2);
+
+}
+
+.project:hover .preview {
+    filter: saturate(1)
+}
+
+.project .project-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    width: 100%;
+    height: 100%;
+    background: white;
+    color: black;
+}
+
+.project-details-top {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.project-title {
+    font-size: var(--font-size-medium);
+}
+
+#contact {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+    text-align: center;
+    width: 100%;
+    height: 100vh;
+}
+
+#contact .description {
+    font-size: var(--font-size-medium);
+    margin-top: -1.5vh;
+}
+
+.contact-info {
+    margin-top: 2.5vh;
+}
+
+.contact {
+    font-size: var(--font-size-medium);
+    color: var(--color-tertiary);
+}
+
+.contact:hover {
+    color: var(--color-secondary)
+}
+
+.contact:active {
+    color: var(--color-primary);
+}
+
+.availability {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2.5vh;
+    font-size: var(--font-size-tiny);
+}
+
+.status-dot {
+    display: flex;
+    width: 10px;
+    height: 10px;
+    background: lime;
+    border-radius: 100%;
+    border: 1px solid white;
+    margin-left: 10px;
+}
+
+footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    bottom: 0;
+}
+
+footer p {
+    letter-spacing: -0.1rem;
+}
+
+@media only screen and (min-width: 640px) and (max-width: 1200px) {
+    
+}
+
+@media only screen and (max-width: 640px) {
+    * {
+        text-align: center;
+    }
+}
