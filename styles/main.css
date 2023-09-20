@@ -46,7 +46,7 @@ h1,h2,h3,h4,h5,h6,p,li,button,.squiggly {
 }
 
 html {
-    
+    overflow-x: hidden;
     -ms-overflow-style: none;
     scrollbar-width: none;
     scroll-behavior: smooth;
@@ -61,6 +61,7 @@ html,body {
 body {
     background: black;
     color: white;
+    overflow: hidden;
 
 }
 
@@ -250,7 +251,7 @@ main {
 }
 
 .slider img {
-    display: block;
+    display: inline-block;
     border: 6px solid white;
     margin-left: -4px;
     width: 20vw;
@@ -266,9 +267,12 @@ main {
     padding-top: 12.5vh;
 }
 
+
 .projects {
     display: flex;
     justify-content: center;
+    align-items: center;
+    padding-top: 5vh;
     margin-top: 5vh;
     flex-wrap: wrap;
     flex: 0 0 100%;
@@ -285,7 +289,7 @@ main {
 }
 
 .project .preview {
-    display: block;
+    display: inline-block;
     position: absolute;
     height: 224px;
     filter: saturate(0.2);
@@ -340,17 +344,39 @@ main {
     margin-top: 2.5vh;
 }
 
-.contact {
+.contact a{
     font-size: var(--font-size-medium);
     color: var(--color-tertiary);
 }
 
-.contact:hover {
+.contact a:hover {
     color: var(--color-secondary)
 }
 
-.contact:active {
+.contact a:active {
     color: var(--color-primary);
+}
+
+.contact span {
+    display: flex;
+}
+
+.copy {
+    display: inline-flex;
+    justify-self: center;
+    align-self: center;
+    margin-left: 1vw;
+    padding: 10px 25px;
+    font-size: var(--font-size-tiny);
+    background: black;
+    border: 3px solid white;
+    color: white;
+}
+
+.copy:hover {
+    background: white;
+    color: black;
+    border-color: black;
 }
 
 .availability {
@@ -435,7 +461,6 @@ footer p {
     .project .preview {
         width: 410px;
         height: auto;
-
     }
 
     .availability {
@@ -456,5 +481,13 @@ footer p {
 @media only screen and (max-width: 640px) {
     * {
         text-align: center;
+    }
+
+    .slider {
+        text-align: left;
+    }
+
+    .project * {
+        text-align: left;
     }
 }

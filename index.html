@@ -141,9 +141,9 @@
                 let’s work together.
             </h2>
             <ul class="contact-info">
-                <li class="contact"><a href="">contact@maaackz.com.</a></li>
-                <li class="contact"><a href="">+15623831777.</a></li>
-                <li class="contact"><a href="">@maaackz.</a></li>
+                <li class="contact"><a href="mailto:contact@maaackz.com" id="email">contact@maaackz.com.</a><button onclick="copyText()" class="copy" id="copy">copy.</button></li>
+                <li class="contact"><a href="sms://+15623831777">+15623831777.</a></li>
+                <li class="contact"><a href="https://instagram.com/maaackz">@maaackz.</a></li>
             </ul>
             <span class="availability">
                 <p class="status">status: i am available for work.</p>
@@ -155,5 +155,16 @@
         <p>made with <3.</p>
         <p>copyright (c) maaackz 2023.</p>
     </footer>
+    <script>
+        function copyText() {
+            var copyButton = document.getElementById("copy")
+            navigator.clipboard.writeText("contact@maaackz.com");
+            copyButton.textContent = "copied."
+            setTimeout(() => {
+                copyButton.textContent = "copy."
+            }, "5000");
+            
+        }
+    </script>
 </body>
 </html>
