@@ -73,6 +73,8 @@ header {
     align-items: center;
     top: 0;
     z-index: 999;
+    padding-left: 5vw;
+    padding-right: 5vw;
 }
 
 ul {
@@ -112,11 +114,13 @@ button:hover {
 }
 
 .job {
+    padding-left: 0.25vw;
     color: var(--color-secondary);
 }
 
 
 nav .link {
+    padding-right: 0.25vw;
     font-size: var(--font-size-medium);
     color: var(--color-tertiary);
 }
@@ -166,6 +170,7 @@ main {
     width: 100%;
     padding-bottom: 40vh;
     margin-bottom: -20vh;
+    margin-top: 5vh;
 }
 
 .hero-button {
@@ -211,10 +216,14 @@ main {
     fill: black;
 }
 
+#about, #work {
+    padding-top: 12.5vh;
+}
+
 #about {
     width: 100%;
     height: fit-content;
-    padding-top: 12.5vh;
+
     
 }
 
@@ -225,17 +234,13 @@ main {
 
 .slider {
     margin-left: -5vw;
-    margin-right: -5vw
+    margin-right: -5vw;
     display: inline-flex;
     white-space: nowrap;
     width: 100vw;
     height: fit-content;
     animation: marquee 30s linear infinite;
 }
-
-/* .slider:hover {
-    animation-play-state: paused;
-} */
 
 .slider-track {
     display: flex;
@@ -253,7 +258,8 @@ main {
 }
 
 .slider img:hover {
-    filter: saturate(0.8)
+    filter: saturate(0.8);
+    transform: rotate(-2deg);
 }
 
 #work {
@@ -286,8 +292,13 @@ main {
 
 }
 
+.project:hover {
+    transform: rotate(2deg);
+}
+
 .project:hover .preview {
-    filter: saturate(1)
+    filter: saturate(1);
+    
 }
 
 .project .project-details {
@@ -367,6 +378,7 @@ footer {
     align-items: center;
     text-align: center;
     padding-bottom: 5vh;
+    margin-top: -10vh;
 }
 
 footer p {
@@ -374,6 +386,53 @@ footer p {
     justify-content: center;
     align-items: center;
     letter-spacing: -0.1rem;
+}
+
+@media only screen and (min-width: 1200px) {
+    :root {
+        --color-primary: white;
+        --color-secondary: #909090;
+        --color-tertiary: #333;
+        --font-size-tiny: 16px;
+        --font-size-small: 24px;
+        --font-size-medium: 48px;
+        --font-size-big: 72px;
+        --font-size-large: 96px;
+        --squiggly: squiggly 0.5s linear infinite;
+    }
+
+    * {
+        text-align: left;
+    }
+
+    .home * {
+        font-size: var(--font-size-large);
+        justify-content: none;
+        align-items: none;
+    }
+
+    header {
+        justify-content: left;
+        align-items: start;
+    }
+
+    .link {
+        font-size: var(--font-size-big)
+    }
+    
+    #about, #work {
+        padding-top: 20vh;
+    }
+
+    .availability {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        margin-top: 2.5vh;
+        font-size: var(--font-size-tiny);
+    }
+
+
 }
 
 @media only screen and (min-width: 640px) and (max-width: 1200px) {
