@@ -55,12 +55,13 @@ html {
 html,body {
     font-family: "Days One", sans-serif;
     overflow-x: hidden;
-    
+
 }
 
 body {
     background: black;
     color: white;
+
 }
 
 header {
@@ -153,6 +154,8 @@ nav .link:hover {
 
 main {
     width: 100vw;
+    padding-left: 5vw;
+    padding-right: 5vw;
 }
 
 #hero {
@@ -361,10 +364,13 @@ footer {
     justify-content: center;
     align-items: center;
     text-align: center;
-    bottom: 0;
+    padding-bottom: 5vh;
 }
 
 footer p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     letter-spacing: -0.1rem;
 }
 
