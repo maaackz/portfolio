@@ -39,6 +39,7 @@
     font-family: "Days One", sans-serif;
     font-weight: 100;
     letter-spacing: -0.15rem;
+    animation: var(--squiggly)
 }
 
 html {
@@ -205,21 +206,40 @@ main {
     
 }
 
-.carousel {
-    display: inline-block;
-    white-space: nowrap;
-    width: 100vw;
-    height: 40vh;
+@keyframes marquee {
+	0%   { transform: translateX(0%); }
+	100% { transform: translateX(-100%); }
 }
 
-.carousel img {
+.slider {
+   
+    display: inline-flex;
+    white-space: nowrap;
+    width: 100vw;
+    height: fit-content;
+    animation: marquee 30s linear infinite;
+}
+
+.slider:hover {
+    animation-play-state: paused;
+}
+
+.slider-track {
+    display: flex;
+    position: relative;
+
+    justify-content: space-around;
+}
+
+.slider img {
+    display: block;
     border: 6px solid white;
     margin-left: -4px;
-    height: 100%;
+    width: 20vw;
     filter:saturate(.20)
 }
 
-.carousel img:hover {
+.slider img:hover {
     filter: saturate(0.8)
 }
 
