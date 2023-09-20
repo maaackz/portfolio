@@ -260,7 +260,7 @@ main {
 
 .slider img:hover {
     filter: saturate(0.8);
-    transform: rotate(-2deg);
+    transform: rotate(-2deg) translateY(-5px);
 }
 
 #work {
@@ -297,7 +297,7 @@ main {
 }
 
 .project:hover {
-    transform: rotate(2deg);
+    transform: rotate(2deg) translateY(-5px);
 }
 
 .project:hover .preview {
@@ -358,7 +358,10 @@ main {
 }
 
 .contact span {
-    display: flex;
+    display: inline-flex;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    white-space: nowrap;
 }
 
 .copy {
@@ -489,5 +492,14 @@ footer p {
 
     .project * {
         text-align: left;
+    }
+
+    .contact a{
+        font-size: var(--font-size-small);
+    }
+
+    .copy {
+        margin-left: 3vw;
+        padding: 5px 10px;
     }
 }
