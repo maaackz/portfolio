@@ -424,6 +424,20 @@ footer p {
         padding-top: 20vh;
     }
 
+    .project {
+
+        width: 432px;
+        height: 471px;
+
+        flex-shrink: 0;
+    }
+
+    .project .preview {
+        width: 410px;
+        height: auto;
+
+    }
+
     .availability {
         display: flex;
         justify-content: left;
