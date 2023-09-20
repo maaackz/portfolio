@@ -181,7 +181,8 @@ main {
 
 .hero-button-arrow {
     height: 100%;
-    margin-left: 25px
+    margin-left: 25px;
+    transition: rotate 0.5s;
 }
 
 .hero-button:hover {
@@ -223,7 +224,8 @@ main {
 }
 
 .slider {
-   
+    margin-left: -5vw;
+    margin-right: -5vw
     display: inline-flex;
     white-space: nowrap;
     width: 100vw;
