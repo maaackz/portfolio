@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="styles/main.css">
+    <script src="scripts/reveal.js"></script>
     <title>max's portfolio.</title>
-</head>
-<body>
 
-    <svg class = "animation" xmlns="http://www.w3.org/2000/svg" version="1.1">
+</head>
+<body id="body">
+    <svg class="animation" xmlns="http://www.w3.org/2000/svg" version="1.1">
         <defs>
             <filter id="squiggly-0">
                 <feTurbulence id="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" seed="0"/>
@@ -18,7 +19,6 @@
                 <feTurbulence id="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" seed="1"/>
         <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" />
             </filter>
-            
             <filter id="squiggly-2">
                 <feTurbulence id="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" seed="2"/>
         <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
@@ -34,7 +34,6 @@
             </filter>
         </defs> 
     </svg>
-
     <header>
         <nav>
             <span class="home nowrap">
@@ -59,36 +58,36 @@
                 </button>
             </a>
         </section>
-        <section id="about">
+        <section id="about" class="reveal">
             <h2 class="label">about.</h2>
             <h2 class="description">
                 i’m an 18-year old college student from california who’s passionate about making cool stuff.
             </h2>
             <section class="slider nowrap">
                 <div class="slider-track squiggly">
-                    <img src="images/film-carousel/1.png" alt="">
+                    <img src="images/film-carousel/1.jpg" alt="">
                     <img src="images/film-carousel/2.jpg" alt="">
                     <img src="images/film-carousel/3.jpg" alt="">
                     <img src="images/film-carousel/4.jpg" alt="">
-                    <img src="images/film-carousel/5.png" alt="">
+                    <img src="images/film-carousel/5.jpg" alt="">
                 </div>
                 <div class="slider-track squiggly">
-                    <img src="images/film-carousel/1.png" alt="">
+                    <img src="images/film-carousel/1.jpg" alt="">
                     <img src="images/film-carousel/2.jpg" alt="">
                     <img src="images/film-carousel/3.jpg" alt="">
                     <img src="images/film-carousel/4.jpg" alt="">
-                    <img src="images/film-carousel/5.png" alt="">
+                    <img src="images/film-carousel/5.jpg" alt="">
                 </div>
                 <div class="slider-track squiggly">
-                    <img src="images/film-carousel/1.png" alt="">
+                    <img src="images/film-carousel/1.jpg" alt="">
                     <img src="images/film-carousel/2.jpg" alt="">
                     <img src="images/film-carousel/3.jpg" alt="">
                     <img src="images/film-carousel/4.jpg" alt="">
-                    <img src="images/film-carousel/5.png" alt="">
+                    <img src="images/film-carousel/5.jpg" alt="">
                 </div>
             </section>
         </section>
-        <section id="work">
+        <section id="work" class="reveal">
             <h2 class="label">work.</h2>
             <h2 class="description">
                 here’s some projects that i’ve worked on.
@@ -135,7 +134,7 @@
                 </a>
             </div>
         </section>
-        <section id="contact">
+        <section id="contact" class="reveal">
             <h2 class="label">contact.</h2>
             <h2 class="description">
                 let’s work together.
@@ -164,8 +163,13 @@
             setTimeout(() => {
                 copyButton.textContent = "copy."
             }, "5000");
-            
         }
+    </script>
+    <script defer>
+            setTimeout(() => {
+                document.getElementById("body").style.filter = "blur(0px)";
+                document.getElementById("body").style.webkitFilter = "blur(0px)";
+            }, "100");
     </script>
 </body>
 </html>
