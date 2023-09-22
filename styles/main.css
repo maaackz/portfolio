@@ -61,44 +61,21 @@ html,body {
 body {
     background: black;
     color: white;
-    overflow: hidden;
-    transition: 0.75s -webkit-filter ease-out;
+    /* overflow: hidden; */
+    /* transition: 0.75s -webkit-filter ease-out;
     transition: 0.75s filter ease-out;
     -webkit-filter: blur(25px);
-    filter: blur(25px);
+    filter: blur(25px); */
 }
 
-@keyframes fade-bottom {
-    0% {
-      transform: translateY(50px);
-      opacity: 0;
-    }
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
 
-  .active.fade-bottom {
-    animation: fade-bottom 1s ease-in;
-  }
-
-.reveal{
-    position: relative;
-    transform: translateY(150px);
-    opacity: 0;
-    transition: 2s all ease;
-  }
-  .reveal.active{
-    transform: translateY(0);
-    opacity: 1;
-  }
 
 header {
     display: flex;
+    position: fixed !important;
     width: 100vw;
     height: 12vh;
-    position: fixed;
+
     justify-content: center;
     align-items: center;
     top: 0;
@@ -148,6 +125,7 @@ button:hover {
     color: var(--color-secondary);
 }
 
+nav {}
 
 nav .link {
     padding-right: 0.25vw;
@@ -505,6 +483,31 @@ footer p {
 
 
 }
+
+@keyframes fade-bottom {
+    0% {
+      transform: translateY(50px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .active.fade-bottom {
+    animation: fade-bottom 1s ease-in;
+  }
+
+.reveal{
+    /* transform: translateY(150px); */
+    opacity: 0;
+    transition: 2s all ease;
+  }
+  .reveal.active{
+    /* transform: translateY(0); */
+    opacity: 1;
+  }
 
 @media only screen and (min-width: 640px) and (max-width: 1200px) {
     
