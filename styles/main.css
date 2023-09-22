@@ -61,7 +61,7 @@ html,body {
 body {
     background: black;
     color: white;
-    /* overflow: hidden; */
+    overflow: hidden;
     /* transition: 0.75s -webkit-filter ease-out;
     transition: 0.75s filter ease-out;
     -webkit-filter: blur(25px);
