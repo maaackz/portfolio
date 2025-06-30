@@ -1,0 +1,22 @@
+{
+  "title": "genka.",
+  "slug": "genka",
+  "description": "a literal tower defense. this was a submission to the 1-bit jam #4.",
+  "image": "/images/genka.png",
+  "type": "game",
+  "section": "games",
+  "category": "games",
+  "technologies": [
+    "unity",
+    "c#"
+  ],
+  "link": "https://maaackz.itch.io/genka",
+  "caseStudySections": [],
+  "types": [
+    "game"
+  ],
+  "id": "genka",
+  "categories": [
+    "games"
+  ]
+}
