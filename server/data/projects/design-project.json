@@ -1,0 +1,21 @@
+{
+  "id": "brand-identity",
+  "title": "brand identity design.",
+  "link": "https://behance.net/maaackz/brand-identity",
+  "image": "/images/project.png",
+  "type": "design",
+  "date": "11/20/2024",
+  "section": "design",
+  "category": "design",
+  "description": "complete brand identity design for a sustainable coffee company. includes logo design, color palette, typography, and brand guidelines.",
+  "technologies": ["Adobe Illustrator", "Adobe Photoshop", "Figma", "Typography"],
+  "features": [
+    "custom logo design with multiple variations",
+    "comprehensive color palette and typography system",
+    "brand guidelines and style guide",
+    "packaging design and mockups",
+    "digital and print-ready assets"
+  ],
+  "github": null,
+  "tags": ["branding", "logo", "typography"]
+} 

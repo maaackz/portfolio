@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import './styles/main.css'; // ✅ Renamed & imported as global CSS
 import { copyText as copyEmail, setupReveal } from '../homeUtils';
 import ProjectCard from '../components/ProjectCard';
+import CategoryFilter from '../components/CategoryFilter';
 
 export default function HomePageCMS() {
   const [sections, setSections] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('all');
 
   useEffect(() => {
     setupReveal();
@@ -29,13 +32,31 @@ export default function HomePageCMS() {
               )
             );
             return Promise.all(promises).then(structuredProjects => {
-              setProjects([...baseProjects, ...structuredProjects]);
+              const allProjects = [...baseProjects, ...structuredProjects];
+              setProjects(allProjects);
+              setFilteredProjects(allProjects);
             });
           })
           .catch(console.error);
       })
       .catch(console.error);
   }, []);
+
+  // Filter projects when activeCategory changes
+  useEffect(() => {
+    if (activeCategory === 'all') {
+      setFilteredProjects(projects);
+    } else {
+      const filtered = projects.filter(project => 
+        project.category === activeCategory || project.section === activeCategory
+      );
+      setFilteredProjects(filtered);
+    }
+  }, [activeCategory, projects]);
+
+  const handleCategoryChange = (category) => {
+    setActiveCategory(category);
+  };
 
   const titles = ['designer', 'developer', 'writer', 'poet', 'creative'];
   const [currentTitle, setCurrentTitle] = useState(titles[0]);
@@ -56,8 +77,6 @@ export default function HomePageCMS() {
     return () => clearInterval(interval);
   }, []);
 
-
-
   const handleCopy = () => {
     const copyButton = document.getElementById("copy");
     navigator.clipboard.writeText("contact@maaackz.com");
@@ -66,6 +85,17 @@ export default function HomePageCMS() {
       copyButton.textContent = "copy.";
     }, 5000);
   };
+
+  // Compute project counts for each category and for 'all'
+  const projectCounts = React.useMemo(() => {
+    const counts = { all: projects.length };
+    sections.forEach(section => {
+      counts[section.id] = projects.filter(
+        p => p.category === section.id || p.section === section.id
+      ).length;
+    });
+    return counts;
+  }, [projects, sections]);
 
   return (
     <div id="body">
@@ -109,7 +139,7 @@ export default function HomePageCMS() {
         <section id="about" className="reveal">
           <h2 className="label">about.</h2>
           <h2 className="description">
-            i’m an 20-year old college student from california who’s passionate about making cool stuff.
+            i'm an 20-year old college student from california who's passionate about making cool stuff.
           </h2>
           <section className="slider-container">
             <div className="slider-track">
@@ -130,16 +160,27 @@ export default function HomePageCMS() {
 
         <section id="work" className="reveal">
           <h2 className="label">work.</h2>
-          <h2 className="description">here’s some projects that i’ve worked on.</h2>
+          <h2 className="description">here's some projects that i've worked on.</h2>
+          
+          <CategoryFilter 
+            categories={sections}
+            activeCategory={activeCategory}
+            onCategoryChange={handleCategoryChange}
+            counts={projectCounts}
+          />
+          
           <div className="projects">
-            {projects.map((p, i) => (
+            {filteredProjects.map((p, i) => (
               <ProjectCard
                 key={i}
+                id={p.id}
+                slug={p.slug}
                 title={p.title}
                 link={p.link}
                 image={p.image}
                 type={p.type}
                 date={p.date || 'n/a'}
+                category={p.category}
               />
             ))}
           </div>
@@ -147,7 +188,7 @@ export default function HomePageCMS() {
 
         <section id="contact" className="reveal">
           <h2 className="label">contact.</h2>
-          <h2 className="description">let’s work together.</h2>
+          <h2 className="description">let's work together.</h2>
           <ul className="contact-info">
             <li className="contact">
               <span>

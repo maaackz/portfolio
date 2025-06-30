@@ -62,6 +62,37 @@ app.get('/api/projects', (req, res) => {
   res.json(projects);
 });
 
+// Get projects by category
+app.get('/api/projects/category/:category', (req, res) => {
+  const { category } = req.params;
+  const files = fs.readdirSync(projectsDir);
+  const projects = files
+    .filter(file => file.endsWith('.json'))
+    .map(file => {
+      const content = fs.readFileSync(path.join(projectsDir, file), 'utf-8');
+      return JSON.parse(content);
+    })
+    .filter(project => project.category === category || project.section === category);
+  res.json(projects);
+});
+
+// Get a specific project by ID or slug
+app.get('/api/projects/:id', (req, res) => {
+  const { id } = req.params;
+  const files = fs.readdirSync(projectsDir);
+  
+  for (const file of files) {
+    if (file.endsWith('.json')) {
+      const content = fs.readFileSync(path.join(projectsDir, file), 'utf-8');
+      const project = JSON.parse(content);
+      if (project.id === id || project.slug === id) {
+        return res.json(project);
+      }
+    }
+  }
+  
+  res.status(404).json({ error: 'Project not found' });
+});
 
 // === Pages ===
 app.get('/api/:category/:slug', (req, res) => {

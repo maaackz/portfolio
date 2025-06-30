@@ -5,6 +5,17 @@
   "image": "/images/boring_clothes.png",
   "type": "website",
   "date": "9/18/2023",
-  "section": "featured",
+  "section": "websites",
+  "category": "websites",
+  "description": "a minimalist e-commerce platform for sustainable fashion. built with modern web technologies and focused on user experience.",
+  "technologies": ["React", "Node.js", "MongoDB", "Stripe", "Tailwind CSS"],
+  "features": [
+    "responsive e-commerce interface",
+    "secure payment processing",
+    "user authentication system",
+    "product catalog management",
+    "order tracking system"
+  ],
+  "github": "https://github.com/maaackz/boring-clothes",
   "tags": ["fashion", "minimal", "ecommerce"]
 }
