@@ -62,7 +62,9 @@ export default function HomePageCMS() {
     let filtered = projects;
     if (activeCategory !== 'all') {
       filtered = filtered.filter(project =>
-        project.category === activeCategory || project.section === activeCategory
+        (project.categories && project.categories.includes(activeCategory)) || 
+        project.category === activeCategory || 
+        project.section === activeCategory
       );
     }
     if (search.trim()) {
@@ -115,7 +117,9 @@ export default function HomePageCMS() {
     const counts = { all: projects.length };
     sections.forEach(section => {
       counts[section.id] = projects.filter(
-        p => p.category === section.id || p.section === section.id
+        p => (p.categories && p.categories.includes(section.id)) || 
+             p.category === section.id || 
+             p.section === section.id
       ).length;
     });
     return counts;
@@ -205,6 +209,7 @@ export default function HomePageCMS() {
                 date={p.date || 'n/a'}
                 category={p.category}
                 section={p.section}
+                categories={p.categories}
               />
             ))}
           </div>

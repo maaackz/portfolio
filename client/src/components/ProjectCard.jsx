@@ -11,7 +11,7 @@ const SINGULAR_LABELS = {
   // add more as needed
 };
 
-export default function ProjectCard({ title, link, image, type, date, id, slug, category, section }) {
+export default function ProjectCard({ title, link, image, type, date, id, slug, category, section, categories }) {
   const navigate = useNavigate();
 
   const handleClick = (e) => {
@@ -22,8 +22,9 @@ export default function ProjectCard({ title, link, image, type, date, id, slug, 
     }
   };
 
-  // Prefer category, fallback to section, fallback to type
-  const label = SINGULAR_LABELS[category] || SINGULAR_LABELS[section] || type || '';
+  // Prefer first category, fallback to category, fallback to section, fallback to type
+  const primaryCategory = categories && categories.length > 0 ? categories[0] : category || section;
+  const label = SINGULAR_LABELS[primaryCategory] || type || '';
 
   return (
     <div className="project" onClick={handleClick}>

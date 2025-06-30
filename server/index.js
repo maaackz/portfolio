@@ -126,6 +126,17 @@ app.get('/api/projects', (req, res) => {
   res.json(projects);
 });
 
+// Add this after your GET /api/projects route
+app.post('/api/projects', (req, res) => {
+  const newProject = req.body;
+  if (!newProject.id || !newProject.slug) {
+    return res.status(400).json({ error: 'Project must have an id and slug' });
+  }
+  const projectPath = path.join(projectsDir, `${newProject.id}.json`);
+  fs.writeFileSync(projectPath, JSON.stringify(newProject, null, 2));
+  res.json(newProject);
+});
+
 // Get projects by category
 app.get('/api/projects/category/:category', (req, res) => {
   const { category } = req.params;

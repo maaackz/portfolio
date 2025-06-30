@@ -359,15 +359,16 @@ main {
     flex-direction: column;
     background: white;
     overflow: hidden;
+    position: relative;
 }
 
 .preview-container {
     width: 100%;
-    /* height: 200px; */
+    height: 100%;
     background: #111;
     overflow: hidden;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
 }
 
@@ -402,7 +403,12 @@ main {
     flex-direction: column;
     justify-content: flex-end;
     padding: 1.2rem 1.2rem 1.2rem 1.2rem;
-    flex: 1;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
 }
 
 .project-title {
@@ -704,7 +710,7 @@ footer p {
     }
     
     #about, #work {
-        padding-top: 20vh;
+        padding-top: 16.5vh;
     }
 
     .project {

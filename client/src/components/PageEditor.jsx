@@ -97,7 +97,7 @@ export default function PageEditor() {
   const [projects, setProjects] = useState([]);
   const [editingProject, setEditingProject] = useState(null);
   const [projectForm, setProjectForm] = useState({
-    title: '', slug: '', description: '', image: '', technologies: [], link: '', caseStudySections: []
+    title: '', slug: '', description: '', image: '', technologies: [], link: '', caseStudySections: [], categories: []
   });
   const [caseSection, setCaseSection] = useState({ title: '', description: '', image: '' });
   const tagifyRef = useRef();
@@ -110,6 +110,11 @@ export default function PageEditor() {
   const [authenticated, setAuthenticated] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+  // Predefined project categories (replacing types)
+  const projectCategories = [
+    'websites', 'games', 'software', 'design', 'videos', 'illustration', 
+    'photography', 'writing', 'research', 'other'
+  ];
 
   useEffect(() => {
     // Check if already authenticated
@@ -162,6 +167,15 @@ export default function PageEditor() {
     setProjectForm(f => ({ ...f, [name]: value }));
   };
 
+  const handleCategoryToggle = (category) => {
+    setProjectForm(f => ({
+      ...f,
+      categories: f.categories.includes(category) 
+        ? f.categories.filter(c => c !== category)
+        : [...f.categories, category]
+    }));
+  };
+
   const handleEditProject = p => {
     setEditingProject(p);
     setProjectForm({
@@ -171,7 +185,8 @@ export default function PageEditor() {
         : typeof p.technologies === 'string' && p.technologies.trim().startsWith('[')
           ? JSON.parse(p.technologies).map(t => t.value || t)
           : (p.technologies || '').split(',').map(t => t.trim()).filter(Boolean),
-      caseStudySections: p.caseStudySections || []
+      caseStudySections: p.caseStudySections || [],
+      categories: p.categories || [p.section, p.category].filter(Boolean) || []
     });
   };
 
@@ -182,11 +197,20 @@ export default function PageEditor() {
   };
 
   const handleSaveProject = () => {
-    const body = {
+    let body = {
       ...projectForm,
       technologies: projectForm.technologies,
       caseStudySections: projectForm.caseStudySections
     };
+    // Ensure id and slug are set for new projects
+    if (!editingProject) {
+      if (!body.id) {
+        body.id = (body.slug || body.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      }
+      if (!body.slug) {
+        body.slug = (body.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      }
+    }
     const method = editingProject ? 'PUT' : 'POST';
     const url = editingProject ? `/api/projects/${editingProject.id}` : '/api/projects';
     fetch(url, {
@@ -197,7 +221,7 @@ export default function PageEditor() {
       .then(res => res.json())
       .then(saved => {
         setEditingProject(null);
-        setProjectForm({ title: '', slug: '', description: '', image: '', technologies: [], link: '', caseStudySections: [] });
+        setProjectForm({ title: '', slug: '', description: '', image: '', technologies: [], link: '', caseStudySections: [], categories: [] });
         setProjects(ps => {
           if (editingProject) {
             return ps.map(p => p.id === saved.id ? saved : p);
@@ -499,11 +523,33 @@ export default function PageEditor() {
               />
               <label style={labelStyle}>Project Link</label>
               <input name="link" value={projectForm.link || ''} onChange={handleProjectFormChange} style={inputStyle} placeholder="Project Link" />
+              <label style={labelStyle}>Project Categories</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5em', marginBottom: '1em' }}>
+                {projectCategories.map(category => (
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={() => handleCategoryToggle(category)}
+                    style={{
+                      padding: '0.4em 0.8em',
+                      borderRadius: 6,
+                      border: '1px solid #888',
+                      background: (projectForm.categories || []).includes(category) ? '#fff' : 'transparent',
+                      color: (projectForm.categories || []).includes(category) ? '#000' : '#fff',
+                      cursor: 'pointer',
+                      fontSize: '0.9em',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
               <div style={{ margin: '1em 0' }}>
                 <b style={{ color: 'white' }}>Case Study Sections</b>
                 <ul style={{ margin: '0.5em 0 0 0', padding: 0, listStyle: 'none' }}>
                   {(projectForm.caseStudySections || []).map((cs, i) => (
-                    <li key={i} style={{ marginBottom: '0.5em', background: '#222', borderRadius: 6, padding: '0.5em 1em', color: 'white', border: '1px solid #fff2' }}>
+                    <li key={(cs.title || '') + '-' + i} style={{ marginBottom: '0.5em', background: '#222', borderRadius: 6, padding: '0.5em 1em', color: 'white', border: '1px solid #fff2' }}>
                       <b>{cs.title}</b> - {cs.description}
                       <button
                         style={hoveredBtn === `editcs${i}` ? { ...buttonStyle, ...buttonHover } : buttonStyle}

@@ -37,7 +37,7 @@ export default function ProjectPage() {
   }, [slug]);
 
   if (loading) {
-    return <div className="project-page"><Navbar /><div className="loading">loading...</div></div>;
+    return <div className="project-page"><Navbar /><div className="loading"></div></div>;
   }
   if (!project) {
     return <div className="project-page"><Navbar /><div className="error">project not found.</div></div>;
