@@ -112,7 +112,7 @@ export default function PageEditor() {
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
   // Predefined project categories (replacing types)
   const projectCategories = [
-    'websites', 'games', 'software', 'design', 'videos', 'illustration', 
+    'websites', 'games', 'software', 'design', 'videos', 'tools', 'illustration', 
     'photography', 'writing', 'research', 'other'
   ];
 
@@ -218,7 +218,12 @@ export default function PageEditor() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(saved => {
         setEditingProject(null);
         setProjectForm({ title: '', slug: '', description: '', image: '', technologies: [], link: '', caseStudySections: [], categories: [] });
@@ -229,6 +234,10 @@ export default function PageEditor() {
             return [...ps, saved];
           }
         });
+      })
+      .catch(error => {
+        console.error('Error saving project:', error);
+        alert('Failed to save project. Please try again.');
       });
   };
 
@@ -283,12 +292,15 @@ export default function PageEditor() {
 
   const createSection = () => {
     if (!newSecId || !newSecTitle || !newSecContent) return alert('Missing section fields');
-    fetch(`http://localhost:5000/api/sections/${newSecId}`, {
+    fetch(`/api/sections/${newSecId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: newSecId, title: newSecTitle, content: newSecContent })
     })
-      .then(() => fetch('http://localhost:5000/api/sections'))
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return fetch('/api/sections');
+      })
       .then(res => res.json())
       .then(sections => {
         if (!Array.isArray(sections)) throw new Error('Invalid sections response');
@@ -300,19 +312,26 @@ export default function PageEditor() {
       })
       .catch(err => {
         console.error('Failed to save section:', err);
+        alert('Failed to save section. Please try again.');
       });
   };
 
   const deleteSection = (id) => {
     if (!window.confirm('Delete this section?')) return;
-    fetch(`http://localhost:5000/api/sections/${id}`, { method: 'DELETE' })
-      .then(() => fetch('http://localhost:5000/api/sections'))
+    fetch(`/api/sections/${id}`, { method: 'DELETE' })
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return fetch('/api/sections');
+      })
       .then(res => res.json())
       .then(sections => {
         if (!Array.isArray(sections)) throw new Error('Invalid sections response');
         setAvailableSections(sections);
       })
-      .catch(err => console.error('Failed to delete section:', err));
+      .catch(err => {
+        console.error('Failed to delete section:', err);
+        alert('Failed to delete section. Please try again.');
+      });
   };
 
   const toggleSection = (id) => {
@@ -324,7 +343,7 @@ export default function PageEditor() {
   const handleSavePage = () => {
     if (!category || !slug || !title) return alert('Missing required fields');
 
-    fetch(`http://localhost:5000/api/structure`)
+    fetch(`/api/structure`)
       .then(res => res.json())
       .then(structure => {
         const categories = structure.categories || [];
@@ -336,21 +355,24 @@ export default function PageEditor() {
         } else {
           categories.push({ title: category, slug: category, pages: [slug] });
         }
-        return fetch('http://localhost:5000/api/structure', {
+        return fetch('/api/structure', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ categories })
         });
       })
       .then(() => {
-        return fetch(`http://localhost:5000/api/${category}/${slug}`, {
+        return fetch(`/api/${category}/${slug}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ title, sections: selectedSections })
         });
       })
       .then(() => alert('Page saved!'))
-      .catch(console.error);
+      .catch(err => {
+        console.error('Failed to save page:', err);
+        alert('Failed to save page. Please try again.');
+      });
   };
 
   // Tagify integration for technologies

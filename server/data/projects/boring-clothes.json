@@ -30,5 +30,8 @@
       "description": "it has payment processing that utilizes stripe.js, which works on static websites such as this one.",
       "image": ""
     }
+  ],
+  "categories": [
+    "websites"
   ]
 }

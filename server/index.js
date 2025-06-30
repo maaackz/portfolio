@@ -77,7 +77,13 @@ app.post('/api/logout', (req, res) => {
 
 // Middleware to protect admin routes (POST/PUT/DELETE)
 function protectAdminRoutes(req, res, next) {
+  console.log(`[AUTH] ${req.method} ${req.path} - Session:`, req.session);
   if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+    // Skip auth for login/logout routes
+    if (req.path === '/login' || req.path === '/logout') {
+      return next();
+    }
+    console.log(`[AUTH] Checking authentication for ${req.method} ${req.path}`);
     return isAuthenticated(req, res, next);
   }
   next();
@@ -126,15 +132,29 @@ app.get('/api/projects', (req, res) => {
   res.json(projects);
 });
 
-// Add this after your GET /api/projects route
+// Add POST route for creating new projects
 app.post('/api/projects', (req, res) => {
-  const newProject = req.body;
-  if (!newProject.id || !newProject.slug) {
-    return res.status(400).json({ error: 'Project must have an id and slug' });
+  try {
+    const newProject = req.body;
+    
+    // Validate required fields
+    if (!newProject.id || !newProject.slug) {
+      return res.status(400).json({ error: 'Project must have an id and slug' });
+    }
+    
+    // Check if project already exists
+    const projectPath = path.join(projectsDir, `${newProject.id}.json`);
+    if (fs.existsSync(projectPath)) {
+      return res.status(409).json({ error: 'Project with this ID already exists' });
+    }
+    
+    // Save the project
+    fs.writeFileSync(projectPath, JSON.stringify(newProject, null, 2));
+    res.json(newProject);
+  } catch (error) {
+    console.error('Error creating project:', error);
+    res.status(500).json({ error: 'Failed to create project' });
   }
-  const projectPath = path.join(projectsDir, `${newProject.id}.json`);
-  fs.writeFileSync(projectPath, JSON.stringify(newProject, null, 2));
-  res.json(newProject);
 });
 
 // Get projects by category
@@ -178,6 +198,24 @@ app.put('/api/projects/:id', (req, res) => {
   }
   fs.writeFileSync(projectPath, JSON.stringify(req.body, null, 2));
   res.json({ ...req.body, id });
+});
+
+// Add DELETE route for removing projects
+app.delete('/api/projects/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const projectPath = path.join(projectsDir, `${id}.json`);
+    
+    if (!fs.existsSync(projectPath)) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    
+    fs.unlinkSync(projectPath);
+    res.json({ success: true, message: 'Project deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    res.status(500).json({ error: 'Failed to delete project' });
+  }
 });
 
 // === Pages ===
@@ -244,6 +282,11 @@ app.post('/api/availability', (req, res) => {
   if (!status || !color) return res.status(400).json({ error: 'Missing status or color' });
   fs.writeFileSync(availabilityFile, JSON.stringify({ status, color }, null, 2));
   res.json({ success: true });
+});
+
+// Add a test endpoint to check if server is working
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'Server is working!', session: req.session });
 });
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

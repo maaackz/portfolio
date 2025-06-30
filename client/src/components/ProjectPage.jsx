@@ -10,6 +10,7 @@ const SINGULAR_LABELS = {
   software: 'software',
   design: 'design',
   videos: 'video',
+  tools: 'tool',
   // add more as needed
 };
 
@@ -43,7 +44,19 @@ export default function ProjectPage() {
     return <div className="project-page"><Navbar /><div className="error">project not found.</div></div>;
   }
 
-  const label = SINGULAR_LABELS[project.category] || SINGULAR_LABELS[project.section] || project.type || '';
+  // Get all categories and convert to singular labels
+  let allCategories = [];
+  if (project.categories && project.categories.length > 0) {
+    allCategories = project.categories.map(cat => SINGULAR_LABELS[cat] || cat);
+  } else if (project.category && !project.categories) {
+    allCategories = [SINGULAR_LABELS[project.category] || project.category];
+  } else if (project.section && !project.categories) {
+    allCategories = [SINGULAR_LABELS[project.section] || project.section];
+  } else if (project.type && !project.categories) {
+    allCategories = [project.type];
+  }
+  
+  const label = allCategories.join('. ') + (allCategories.length > 0 ? '' : '');
 
   return (
     <div className="project-page">

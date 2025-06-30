@@ -15,5 +15,8 @@
   "types": [
     "game"
   ],
-  "id": "genka"
+  "id": "genka",
+  "categories": [
+    "games"
+  ]
 }
