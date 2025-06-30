@@ -94,6 +94,17 @@ app.get('/api/projects/:id', (req, res) => {
   res.status(404).json({ error: 'Project not found' });
 });
 
+// Add PUT route for updating a project
+app.put('/api/projects/:id', (req, res) => {
+  const { id } = req.params;
+  const projectPath = path.join(projectsDir, `${id}.json`);
+  if (!fs.existsSync(projectPath)) {
+    return res.status(404).json({ error: 'Project not found' });
+  }
+  fs.writeFileSync(projectPath, JSON.stringify(req.body, null, 2));
+  res.json({ ...req.body, id });
+});
+
 // === Pages ===
 app.get('/api/:category/:slug', (req, res) => {
   const { category, slug } = req.params;

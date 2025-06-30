@@ -6,8 +6,8 @@ export default function Effects() {
       <defs>
         {[...Array(5).keys()].map(i => (
           <filter id={`squiggly-${i}`} key={i}>
-            <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed={`${i}`} />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={i % 2 === 0 ? 2 : 4} />
+            <feTurbulence baseFrequency="0.016" numOctaves="2" result="noise" seed={`${i}`} />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale={i % 2 === 0 ? 1.5 : 3} />
           </filter>
         ))}
       </defs>
