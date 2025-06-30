@@ -1,0 +1,4 @@
+# Ignore environment variable files
+.env
+server/data/admin_pass.hash
+/node_modules

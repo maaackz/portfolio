@@ -106,6 +106,16 @@ export default function PageEditor() {
   const [savingAvailability, setSavingAvailability] = useState(false);
   // Add state to track which case study section is being edited
   const [editingCaseSectionIdx, setEditingCaseSectionIdx] = useState(null);
+  // --- Auth State ---
+  const [authenticated, setAuthenticated] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+
+  useEffect(() => {
+    // Check if already authenticated
+    fetch('/api/login', { method: 'GET', credentials: 'include' })
+      .then(res => res.ok ? setAuthenticated(true) : setAuthenticated(false));
+  }, []);
 
   useEffect(() => {
     if (tab === 'projects') {
@@ -121,6 +131,31 @@ export default function PageEditor() {
       .then(res => res.json())
       .then(data => setAvailability(data));
   }, []);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setLoginError('');
+    fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(loginForm)
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setAuthenticated(true);
+        } else {
+          setLoginError(data.error || 'Login failed');
+        }
+      })
+      .catch(() => setLoginError('Login failed'));
+  };
+
+  const handleLogout = () => {
+    fetch('/api/logout', { method: 'POST', credentials: 'include' })
+      .then(() => setAuthenticated(false));
+  };
 
   const handleProjectFormChange = e => {
     const { name, value } = e.target;
@@ -345,9 +380,37 @@ export default function PageEditor() {
       .then(() => setSavingAvailability(false));
   };
 
+  if (!authenticated) {
+    return (
+      <div style={{ minHeight: '100vh', background: 'black', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <form onSubmit={handleLogin} style={{ background: '#181818', padding: 32, borderRadius: 12, boxShadow: '0 2px 12px #0008', minWidth: 320 }}>
+          <h2 style={{ marginBottom: 24 }}>Admin Login</h2>
+          <input
+            type="text"
+            placeholder="Username"
+            value={loginForm.username}
+            onChange={e => setLoginForm(f => ({ ...f, username: e.target.value }))}
+            style={{ width: '100%', marginBottom: 16, padding: 10, borderRadius: 6, border: '1px solid #888', background: '#222', color: 'white' }}
+            autoFocus
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={loginForm.password}
+            onChange={e => setLoginForm(f => ({ ...f, password: e.target.value }))}
+            style={{ width: '100%', marginBottom: 16, padding: 10, borderRadius: 6, border: '1px solid #888', background: '#222', color: 'white' }}
+          />
+          {loginError && <div style={{ color: 'red', marginBottom: 12 }}>{loginError}</div>}
+          <button type="submit" style={{ width: '100%', padding: 12, borderRadius: 6, background: 'white', color: 'black', fontWeight: 700, border: 'none', marginBottom: 8 }}>Login</button>
+        </form>
+      </div>
+    );
+  }
+
   return (
     <div style={{ padding: '2rem', background: 'linear-gradient(120deg, #111 0%, #222 100%)', minHeight: '100vh', color: 'white' }}>
       <h1 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', color: 'white', letterSpacing: '-0.04em' }}>Admin Dashboard</h1>
+      <button onClick={handleLogout} style={{ position: 'absolute', top: 24, right: 24, background: '#222', color: 'white', border: '1px solid #888', borderRadius: 6, padding: '0.5em 1.2em', fontWeight: 600, cursor: 'pointer' }}>Logout</button>
       {/* Availability Status Editor */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1em', marginBottom: '2em', background: '#181818', borderRadius: 10, padding: '1em 2em', maxWidth: 600 }}>
         <span style={{ fontWeight: 600, color: 'white', fontSize: '1.1em' }}>Availability:</span>

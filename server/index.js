@@ -5,6 +5,10 @@ import bodyParser from 'body-parser';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import session from 'express-session';
+import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Fix __dirname in ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -19,8 +23,67 @@ const structureFile = path.join(dataDir, 'structure.json');
 const tagsFile = path.join(dataDir, 'tags.json');
 const availabilityFile = path.join(dataDir, 'availability.json');
 
+const ADMIN_USER = 'admin';
+const ADMIN_PASS_HASH_FILE = path.join(dataDir, 'admin_pass.hash');
+
+const SESSION_SECRET = process.env.SESSION_SECRET;
+if (!SESSION_SECRET) {
+  console.error('ERROR: SESSION_SECRET environment variable not set.');
+  process.exit(1);
+}
+
 app.use(cors());
 app.use(bodyParser.json());
+
+app.use(session({
+  secret: SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { httpOnly: true, sameSite: 'lax' }
+}));
+
+function isAuthenticated(req, res, next) {
+  if (req.session && req.session.authenticated) return next();
+  res.status(401).json({ error: 'Unauthorized' });
+}
+
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  if (username !== ADMIN_USER) return res.status(401).json({ error: 'Invalid credentials' });
+  if (!fs.existsSync(ADMIN_PASS_HASH_FILE)) return res.status(500).json({ error: 'Admin password not set' });
+  const hash = fs.readFileSync(ADMIN_PASS_HASH_FILE, 'utf-8');
+  const match = await bcrypt.compare(password, hash);
+  if (match) {
+    req.session.authenticated = true;
+    res.json({ success: true });
+  } else {
+    res.status(401).json({ error: 'Invalid credentials' });
+  }
+});
+
+app.get('/api/login', (req, res) => {
+  if (req.session && req.session.authenticated) {
+    res.json({ authenticated: true });
+  } else {
+    res.status(401).json({ authenticated: false });
+  }
+});
+
+app.post('/api/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.json({ success: true });
+  });
+});
+
+// Middleware to protect admin routes (POST/PUT/DELETE)
+function protectAdminRoutes(req, res, next) {
+  if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+    return isAuthenticated(req, res, next);
+  }
+  next();
+}
+
+app.use('/api', protectAdminRoutes);
 
 // Ensure base directories exist
 fs.mkdirSync(sectionsDir, { recursive: true });
