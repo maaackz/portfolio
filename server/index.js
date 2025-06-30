@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 const dataDir = path.join(__dirname, 'data');
 const sectionsDir = path.join(dataDir, 'sections');
@@ -26,7 +26,7 @@ const availabilityFile = path.join(dataDir, 'availability.json');
 const ADMIN_USER = 'admin';
 const ADMIN_PASS_HASH_FILE = path.join(dataDir, 'admin_pass.hash');
 
-const SESSION_SECRET = process.env.SESSION_SECRET;
+const SESSION_SECRET = process.env.SESSION_SECRET || 'your-secret-key-change-in-production';
 if (!SESSION_SECRET) {
   console.error('ERROR: SESSION_SECRET environment variable not set.');
   process.exit(1);
@@ -289,4 +289,19 @@ app.get('/api/test', (req, res) => {
   res.json({ message: 'Server is working!', session: req.session });
 });
 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+// Serve static files from the React app build directory
+const clientBuildPath = path.join(__dirname, '..', 'client', 'dist');
+if (fs.existsSync(clientBuildPath)) {
+  app.use(express.static(clientBuildPath));
+  
+  // Handle React routing, return all requests to React app
+  app.get('*', (req, res) => {
+    // Skip API routes
+    if (req.path.startsWith('/api/')) {
+      return res.status(404).json({ error: 'API endpoint not found' });
+    }
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+  });
+}
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

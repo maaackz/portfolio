@@ -278,7 +278,7 @@ export default function PageEditor() {
   const [newSecContent, setNewSecContent] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/sections')
+    fetch('/api/sections')
       .then(res => res.json())
       .then(sections => {
         if (!Array.isArray(sections)) throw new Error('Invalid sections response');

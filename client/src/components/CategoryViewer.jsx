@@ -6,7 +6,7 @@ export default function CategoryViewer() {
   const [category, setCategory] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/structure')
+    fetch('/api/structure')
       .then(res => res.json())
       .then(data => {
         const cat = data.categories.find(c => c.slug === slug);
