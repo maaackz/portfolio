@@ -295,7 +295,7 @@ if (fs.existsSync(clientBuildPath)) {
   app.use(express.static(clientBuildPath));
   
   // Handle React routing, return all requests to React app
-  app.get('*', (req, res) => {
+  app.get('/(.*)', (req, res) => {
     // Skip API routes
     if (req.path.startsWith('/api/')) {
       return res.status(404).json({ error: 'API endpoint not found' });
