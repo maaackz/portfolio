@@ -48,6 +48,21 @@ app.post('/api/sections/:id', (req, res) => {
   res.json({ success: true });
 });
 
+const projectsDir = path.join(dataDir, 'projects');
+fs.mkdirSync(projectsDir, { recursive: true });
+
+app.get('/api/projects', (req, res) => {
+  const files = fs.readdirSync(projectsDir);
+  const projects = files
+    .filter(file => file.endsWith('.json'))
+    .map(file => {
+      const content = fs.readFileSync(path.join(projectsDir, file), 'utf-8');
+      return JSON.parse(content);
+    });
+  res.json(projects);
+});
+
+
 // === Pages ===
 app.get('/api/:category/:slug', (req, res) => {
   const { category, slug } = req.params;
