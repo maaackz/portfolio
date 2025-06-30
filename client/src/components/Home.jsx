@@ -3,12 +3,19 @@ import './styles/main.css'; // ✅ Renamed & imported as global CSS
 import { copyText as copyEmail, setupReveal } from '../homeUtils';
 import ProjectCard from '../components/ProjectCard';
 import CategoryFilter from '../components/CategoryFilter';
+import Navbar from './Navbar';
+import Footer from './Footer';
+import Effects from './Effects';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function HomePageCMS() {
   const [sections, setSections] = useState([]);
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [activeCategory, setActiveCategory] = useState('all');
+  const [search, setSearch] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setupReveal();
@@ -42,20 +49,29 @@ export default function HomePageCMS() {
       .catch(console.error);
   }, []);
 
-  // Filter projects when activeCategory changes
+  // Filter projects when activeCategory or search changes
   useEffect(() => {
-    if (activeCategory === 'all') {
-      setFilteredProjects(projects);
-    } else {
-      const filtered = projects.filter(project => 
+    let filtered = projects;
+    if (activeCategory !== 'all') {
+      filtered = filtered.filter(project =>
         project.category === activeCategory || project.section === activeCategory
       );
-      setFilteredProjects(filtered);
     }
-  }, [activeCategory, projects]);
+    if (search.trim()) {
+      const s = search.trim().toLowerCase();
+      filtered = filtered.filter(project =>
+        (project.title && project.title.toLowerCase().includes(s))
+      );
+    }
+    setFilteredProjects(filtered);
+  }, [activeCategory, projects, search]);
 
   const handleCategoryChange = (category) => {
     setActiveCategory(category);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
   };
 
   const titles = ['designer', 'developer', 'writer', 'poet', 'creative'];
@@ -97,32 +113,21 @@ export default function HomePageCMS() {
     return counts;
   }, [projects, sections]);
 
+  React.useEffect(() => {
+    if (location.state && location.state.scrollTo) {
+      const section = document.getElementById(location.state.scrollTo);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+        // Clear the state so it doesn't scroll again
+        navigate('.', { replace: true, state: {} });
+      }
+    }
+  }, [location, navigate]);
+
   return (
     <div id="body">
-      <svg className="animation" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          {[...Array(5).keys()].map(i => (
-            <filter id={`squiggly-${i}`} key={i}>
-              <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed={`${i}`} />
-              <feDisplacementMap in="SourceGraphic" in2="noise" scale={i % 2 === 0 ? 2 : 4} />
-            </filter>
-          ))}
-        </defs>
-      </svg>
-
-      <header>
-        <nav>
-          <span className="home nowrap">
-            <a href="#hero"><h1 className="name">max m.</h1></a>
-            <h2 className="job">{currentTitle}.</h2>
-          </span>
-          <ul className="links nowrap">
-            <li className="link"><a href="#about">about.</a></li>
-            <li className="link"><a href="#work">work.</a></li>
-            <li className="link"><a href="#contact">contact.</a></li>
-          </ul>
-        </nav>
-      </header>
+      <Navbar active="work" />
+      <Effects />
 
       <main>
         <section id="hero">
@@ -161,14 +166,24 @@ export default function HomePageCMS() {
         <section id="work" className="reveal">
           <h2 className="label">work.</h2>
           <h2 className="description">here's some projects that i've worked on.</h2>
-          
-          <CategoryFilter 
-            categories={sections}
-            activeCategory={activeCategory}
-            onCategoryChange={handleCategoryChange}
-            counts={projectCounts}
-          />
-          
+          <div className="filter-bar squiggly">
+            <CategoryFilter 
+              categories={sections}
+              activeCategory={activeCategory}
+              onCategoryChange={handleCategoryChange}
+              counts={projectCounts}
+            />
+            <div className="search-bar-wrapper">
+              <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="#888" strokeWidth="3"/><line x1="16.5" y1="16.5" x2="22" y2="22" stroke="#888" strokeWidth="3" strokeLinecap="square"/></svg>
+              <input
+                className="project-search"
+                type="text"
+                placeholder="search projects..."
+                value={search}
+                onChange={handleSearchChange}
+              />
+            </div>
+          </div>
           <div className="projects">
             {filteredProjects.map((p, i) => (
               <ProjectCard
@@ -181,6 +196,7 @@ export default function HomePageCMS() {
                 type={p.type}
                 date={p.date || 'n/a'}
                 category={p.category}
+                section={p.section}
               />
             ))}
           </div>
@@ -206,11 +222,7 @@ export default function HomePageCMS() {
         </section>
       </main>
 
-      <footer>
-        <p>made with &lt;3.</p>
-        <p>copyright (c) maaackz 2023-25.</p>
-        <p>all rights reserved.</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

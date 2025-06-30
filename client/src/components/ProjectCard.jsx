@@ -16,15 +16,9 @@ export default function ProjectCard({ title, link, image, type, date, id, slug, 
 
   const handleClick = (e) => {
     e.preventDefault();
-    // If it's an external link, open in new tab
-    if (link && (link.startsWith('http') || link.startsWith('mailto'))) {
-      window.open(link, '_blank');
-    } else {
-      // Navigate to project page
-      const projectSlug = slug || id;
-      if (projectSlug) {
-        navigate(`/projects/${projectSlug}`);
-      }
+    const projectSlug = slug || id;
+    if (projectSlug) {
+      navigate(`/projects/${projectSlug}`);
     }
   };
 

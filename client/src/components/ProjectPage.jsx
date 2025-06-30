@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import Navbar from './Navbar';
+import Footer from './Footer';
+import Effects from './Effects';
+
+const SINGULAR_LABELS = {
+  websites: 'website',
+  games: 'game',
+  software: 'software',
+  design: 'design',
+  videos: 'video',
+  // add more as needed
+};
 
 export default function ProjectPage() {
   const { slug } = useParams();
-  const navigate = useNavigate();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const findProject = async () => {
       try {
-        // First try to get from the new projects endpoint
         const response = await fetch(`/api/projects/${slug}`);
         if (response.ok) {
           const foundProject = await response.json();
@@ -18,134 +28,71 @@ export default function ProjectPage() {
           setLoading(false);
           return;
         }
-
-        // If not found, try the old structure approach
-        const structureResponse = await fetch('/api/structure');
-        const structure = await structureResponse.json();
-        
-        for (const category of structure.categories || []) {
-          for (const pageSlug of category.pages || []) {
-            if (pageSlug === slug) {
-              const pageResponse = await fetch(`/api/${category.slug}/${pageSlug}`);
-              const pageData = await pageResponse.json();
-              setProject({ ...pageData, category: category.slug });
-              setLoading(false);
-              return;
-            }
-          }
-        }
-        
         setLoading(false);
       } catch (error) {
-        console.error('Error loading project:', error);
         setLoading(false);
       }
     };
-
     findProject();
   }, [slug]);
 
   if (loading) {
-    return (
-      <div className="project-page">
-        <div className="loading">loading...</div>
-      </div>
-    );
+    return <div className="project-page"><Navbar /><div className="loading">loading...</div></div>;
+  }
+  if (!project) {
+    return <div className="project-page"><Navbar /><div className="error">project not found.</div></div>;
   }
 
-  if (!project) {
-    return (
-      <div className="project-page">
-        <div className="error">project not found.</div>
-        <button onClick={() => navigate('/')} className="back-button">back to home.</button>
-      </div>
-    );
-  }
+  const label = SINGULAR_LABELS[project.category] || SINGULAR_LABELS[project.section] || project.type || '';
 
   return (
     <div className="project-page">
-      <header>
-        <nav>
-          <span className="home nowrap">
-            <a href="/"><h1 className="name">max m.</h1></a>
-          </span>
-          <button onClick={() => navigate('/')} className="back-button">back to work.</button>
-        </nav>
-      </header>
-
-      <main className="project-content">
-        <div className="project-hero">
-          <div className="project-image-container squiggly">
-            <img 
-              src={project.image || '/images/placeholder.png'} 
-              alt={project.title} 
-              className="project-hero-image"
-            />
-          </div>
-          <div className="project-hero-info">
-            <h1 className="project-title">{project.title}</h1>
-            <p className="project-type">{project.type}.</p>
-            {project.date && <p className="project-date">{project.date}.</p>}
-            {project.category && <p className="project-category">{project.category}.</p>}
+      <Navbar />
+      <Effects />
+      <div className="project-case-main">
+        <div className="project-case-image polaroid squiggly">
+          <img src={project.image || '/images/placeholder.png'} alt={project.title} />
+          <div className="project-case-image-caption">
+            <div className="project-case-image-title">{project.title}</div>
+            <div className="project-case-image-type">{label}.</div>
+            <a className="project-case-readmore" href={project.link} target="_blank" rel="noopener noreferrer">read more &rarr;</a>
           </div>
         </div>
-
-        <div className="project-details">
+        <div className="project-case-content faded-bg">
+          <h1 className="project-case-title">{project.title}</h1>
+          <h2 className="project-case-type">{label}.</h2>
           {project.description && (
-            <section className="project-description">
-              <h2 className="section-title">description.</h2>
-              <p className="description-text">{project.description}</p>
-            </section>
+            <p className="project-case-desc">{project.description}</p>
           )}
-
           {project.technologies && (
-            <section className="project-technologies">
-              <h2 className="section-title">technologies.</h2>
-              <div className="tech-tags">
-                {project.technologies.map((tech, index) => (
-                  <span key={index} className="tech-tag">{tech}</span>
-                ))}
-              </div>
-            </section>
+            <div className="project-case-tags">
+              {project.technologies.map((tech, i) => (
+                <span className="project-case-tag squiggly" key={i}>{tech}</span>
+              ))}
+            </div>
           )}
-
-          {project.features && (
-            <section className="project-features">
-              <h2 className="section-title">features.</h2>
-              <ul className="features-list">
-                {project.features.map((feature, index) => (
-                  <li key={index} className="feature-item">{feature}</li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {project.content && (
-            <section className="project-content-section">
-              <h2 className="section-title">details.</h2>
-              <div className="content-text" dangerouslySetInnerHTML={{ __html: project.content }} />
-            </section>
-          )}
-
-          {(project.link || project.github) && (
-            <section className="project-links">
-              <h2 className="section-title">links.</h2>
-              <div className="project-links-container">
-                {project.link && (
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="project-link">
-                    view project.
-                  </a>
-                )}
-                {project.github && (
-                  <a href={project.github} target="_blank" rel="noopener noreferrer" className="project-link">
-                    view code.
-                  </a>
-                )}
-              </div>
-            </section>
+          {project.link && (
+            <a className="project-case-demo squiggly" href={project.link} target="_blank" rel="noopener noreferrer">live demo / link to site ↗</a>
           )}
         </div>
-      </main>
+      </div>
+      <div className="project-case-study">
+        <div className="case-row">
+          <div className="case-img-placeholder squiggly">[ picture ]</div>
+          <div className="case-desc-block">
+            <h3 className="case-title">payment integration</h3>
+            <p className="case-desc">lorem ipsum dolor sit amet, other stuff about the project. utilizes stripejs which functions on static websites.</p>
+          </div>
+        </div>
+        <div className="case-row">
+          <div className="case-img-placeholder squiggly">[ picture ]</div>
+          <div className="case-desc-block">
+            <h3 className="case-title">shopping cart</h3>
+            <p className="case-desc">using local storage</p>
+          </div>
+        </div>
+      </div>
+      <Footer />
     </div>
   );
 } 
