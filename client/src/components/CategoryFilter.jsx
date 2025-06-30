@@ -4,7 +4,7 @@ export default function CategoryFilter({ categories, activeCategory, onCategoryC
   return (
     <div className="category-filter">
       <div className="filter-buttons">
-        <button 
+        <button
           className={`filter-button ${activeCategory === 'all' ? 'active' : ''} ${counts?.all === 0 ? 'disabled' : ''}`}
           onClick={() => onCategoryChange('all')}
           disabled={counts?.all === 0}
@@ -30,7 +30,7 @@ export default function CategoryFilter({ categories, activeCategory, onCategoryC
               disabled={!counts?.[category.id]}
               style={{ textTransform: 'none' }}
             >
-              <span className="filter-text">{category.title.toLowerCase()}  . ({counts?.[category.id] || 0})</span>
+              <span className="filter-text">{category.title.toLowerCase()}. ({counts?.[category.id] || 0})</span>
             </button>
           ))}
       </div>

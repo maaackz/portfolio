@@ -16,6 +16,7 @@ export default function HomePageCMS() {
   const [search, setSearch] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
+  const [availability, setAvailability] = useState({ status: '', color: '#00ff00' });
 
   useEffect(() => {
     setupReveal();
@@ -47,6 +48,13 @@ export default function HomePageCMS() {
           .catch(console.error);
       })
       .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/availability')
+      .then(res => res.json())
+      .then(data => setAvailability(data))
+      .catch(() => setAvailability({ status: 'i am available for work.', color: '#00ff00' }));
   }, []);
 
   // Filter projects when activeCategory or search changes
@@ -216,8 +224,8 @@ export default function HomePageCMS() {
             <li className="contact"><a href="https://instagram.com/maaaaackz">@maaaaackz.</a></li>
           </ul>
           <span className="availability">
-            <p className="status">status: i am available for work.</p>
-            <span className="status-dot squiggly"></span>
+            <p className="status">status: {availability.status}</p>
+            <span className="status-dot squiggly" style={{ backgroundColor: availability.color }}></span>
           </span>
         </section>
       </main>

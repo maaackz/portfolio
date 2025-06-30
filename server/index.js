@@ -17,6 +17,7 @@ const dataDir = path.join(__dirname, 'data');
 const sectionsDir = path.join(dataDir, 'sections');
 const structureFile = path.join(dataDir, 'structure.json');
 const tagsFile = path.join(dataDir, 'tags.json');
+const availabilityFile = path.join(dataDir, 'availability.json');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -151,6 +152,23 @@ app.get('/api/tags', (req, res) => {
 
 app.post('/api/tags', (req, res) => {
   fs.writeFileSync(tagsFile, JSON.stringify(req.body, null, 2));
+  res.json({ success: true });
+});
+
+// Get availability status
+app.get('/api/availability', (req, res) => {
+  if (!fs.existsSync(availabilityFile)) {
+    return res.json({ status: 'i am available for work.', color: '#00ff00' });
+  }
+  const data = JSON.parse(fs.readFileSync(availabilityFile, 'utf-8'));
+  res.json(data);
+});
+
+// Set availability status
+app.post('/api/availability', (req, res) => {
+  const { status, color } = req.body;
+  if (!status || !color) return res.status(400).json({ error: 'Missing status or color' });
+  fs.writeFileSync(availabilityFile, JSON.stringify({ status, color }, null, 2));
   res.json({ success: true });
 });
 

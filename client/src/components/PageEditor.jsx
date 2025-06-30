@@ -89,7 +89,7 @@ const tagStyle = {
   letterSpacing: '-0.02em',
 };
 
-export default function AdminDashboard() {
+export default function PageEditor() {
   const [tab, setTab] = useState('projects');
   const [hovered, setHovered] = useState(null);
   const [hoveredBtn, setHoveredBtn] = useState(null);
@@ -101,6 +101,11 @@ export default function AdminDashboard() {
   });
   const [caseSection, setCaseSection] = useState({ title: '', description: '', image: '' });
   const tagifyRef = useRef();
+  // --- Availability State ---
+  const [availability, setAvailability] = useState({ status: '', color: '#00ff00' });
+  const [savingAvailability, setSavingAvailability] = useState(false);
+  // Add state to track which case study section is being edited
+  const [editingCaseSectionIdx, setEditingCaseSectionIdx] = useState(null);
 
   useEffect(() => {
     if (tab === 'projects') {
@@ -110,6 +115,12 @@ export default function AdminDashboard() {
         .catch(() => setProjects([]));
     }
   }, [tab]);
+
+  useEffect(() => {
+    fetch('/api/availability')
+      .then(res => res.json())
+      .then(data => setAvailability(data));
+  }, []);
 
   const handleProjectFormChange = e => {
     const { name, value } = e.target;
@@ -162,11 +173,22 @@ export default function AdminDashboard() {
       });
   };
 
-  const handleAddCaseSection = () => {
-    setProjectForm(f => ({
-      ...f,
-      caseStudySections: [...(f.caseStudySections || []), { ...caseSection }]
-    }));
+  const handleAddOrEditCaseSection = () => {
+    if (!caseSection.title && !caseSection.description && !caseSection.image) return;
+    if (editingCaseSectionIdx !== null) {
+      // Edit existing
+      setProjectForm(f => ({
+        ...f,
+        caseStudySections: f.caseStudySections.map((s, i) => i === editingCaseSectionIdx ? { ...caseSection } : s)
+      }));
+      setEditingCaseSectionIdx(null);
+    } else {
+      // Add new
+      setProjectForm(f => ({
+        ...f,
+        caseStudySections: [...(f.caseStudySections || []), { ...caseSection }]
+      }));
+    }
     setCaseSection({ title: '', description: '', image: '' });
   };
 
@@ -308,9 +330,46 @@ export default function AdminDashboard() {
     setProjectForm(f => ({ ...f, technologies: tagValues }));
   }
 
+  const handleAvailabilityChange = e => {
+    const { name, value } = e.target;
+    setAvailability(a => ({ ...a, [name]: value }));
+  };
+
+  const saveAvailability = () => {
+    setSavingAvailability(true);
+    fetch('/api/availability', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(availability)
+    })
+      .then(() => setSavingAvailability(false));
+  };
+
   return (
     <div style={{ padding: '2rem', background: 'linear-gradient(120deg, #111 0%, #222 100%)', minHeight: '100vh', color: 'white' }}>
       <h1 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', color: 'white', letterSpacing: '-0.04em' }}>Admin Dashboard</h1>
+      {/* Availability Status Editor */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1em', marginBottom: '2em', background: '#181818', borderRadius: 10, padding: '1em 2em', maxWidth: 600 }}>
+        <span style={{ fontWeight: 600, color: 'white', fontSize: '1.1em' }}>Availability:</span>
+        <span style={{ width: 16, height: 16, borderRadius: '50%', background: availability.color, display: 'inline-block', border: '2px solid #fff2', marginRight: 8 }}></span>
+        <input
+          name="status"
+          value={availability.status || ''}
+          onChange={handleAvailabilityChange}
+          style={{ ...inputStyle, width: 220, marginBottom: 0 }}
+          placeholder="Status message"
+        />
+        <input
+          name="color"
+          type="color"
+          value={availability.color || '#00ff00'}
+          onChange={handleAvailabilityChange}
+          style={{ width: 36, height: 36, border: 'none', background: 'none', marginLeft: 8 }}
+        />
+        <button style={{ ...buttonStyle, padding: '0.5em 1.2em', margin: 0 }} onClick={saveAvailability} disabled={savingAvailability}>
+          {savingAvailability ? 'Saving...' : 'Save'}
+        </button>
+      </div>
       <div style={{ marginBottom: '2em' }}>
         <TabButton active={tab === 'projects'} onClick={() => setTab('projects')}>Projects</TabButton>
         <TabButton active={tab === 'sections'} onClick={() => setTab('sections')}>Sections</TabButton>
@@ -384,6 +443,15 @@ export default function AdminDashboard() {
                     <li key={i} style={{ marginBottom: '0.5em', background: '#222', borderRadius: 6, padding: '0.5em 1em', color: 'white', border: '1px solid #fff2' }}>
                       <b>{cs.title}</b> - {cs.description}
                       <button
+                        style={hoveredBtn === `editcs${i}` ? { ...buttonStyle, ...buttonHover } : buttonStyle}
+                        onMouseEnter={() => setHoveredBtn(`editcs${i}`)}
+                        onMouseLeave={() => setHoveredBtn(null)}
+                        onClick={() => {
+                          setCaseSection(cs);
+                          setEditingCaseSectionIdx(i);
+                        }}
+                      >Edit</button>
+                      <button
                         style={hoveredBtn === `delcs${i}` ? { ...deleteButtonStyle, ...deleteButtonHover } : deleteButtonStyle}
                         onMouseEnter={() => setHoveredBtn(`delcs${i}`)}
                         onMouseLeave={() => setHoveredBtn(null)}
@@ -396,7 +464,10 @@ export default function AdminDashboard() {
                   <input value={caseSection.title || ''} onChange={e => setCaseSection(s => ({ ...s, title: e.target.value }))} style={{ ...inputStyle, marginBottom: 0 }} placeholder="Section Title" />
                   <input value={caseSection.description || ''} onChange={e => setCaseSection(s => ({ ...s, description: e.target.value }))} style={{ ...inputStyle, marginBottom: 0 }} placeholder="Section Description" />
                   <input value={caseSection.image || ''} onChange={e => setCaseSection(s => ({ ...s, image: e.target.value }))} style={{ ...inputStyle, marginBottom: 0 }} placeholder="Section Image URL" />
-                  <button style={{ ...buttonStyle, padding: '0.3em 1em', fontSize: '0.9em' }} onClick={handleAddCaseSection}>Add</button>
+                  <button style={{ ...buttonStyle, padding: '0.3em 1em', fontSize: '0.9em' }} onClick={handleAddOrEditCaseSection}>{editingCaseSectionIdx !== null ? 'Save' : 'Add'}</button>
+                  {editingCaseSectionIdx !== null && (
+                    <button style={{ ...deleteButtonStyle, padding: '0.3em 1em', fontSize: '0.9em' }} onClick={() => { setCaseSection({ title: '', description: '', image: '' }); setEditingCaseSectionIdx(null); }}>Cancel</button>
+                  )}
                 </div>
               </div>
               <button style={{ ...buttonStyle, marginTop: '1em' }} onClick={handleSaveProject}>{editingProject ? 'Save Changes' : 'Add Project'}</button>

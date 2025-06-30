@@ -16,10 +16,7 @@
   ],
   "features": [
     "responsive e-commerce interface",
-    "secure payment processing",
-    "user authentication system",
-    "product catalog management",
-    "order tracking system"
+    "secure payment processing"
   ],
   "github": "https://github.com/maaackz/boring-clothes",
   "tags": [
@@ -29,8 +26,8 @@
   ],
   "caseStudySections": [
     {
-      "title": "Section Title",
-      "description": "Section Desc",
+      "title": "payment processing",
+      "description": "it has payment processing that utilizes stripe.js, which works on static websites such as this one.",
       "image": ""
     }
   ]
