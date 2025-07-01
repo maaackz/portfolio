@@ -276,9 +276,11 @@ export default function PageEditor() {
       ...p,
       technologies: Array.isArray(p.technologies)
         ? p.technologies
-        : typeof p.technologies === 'string' && p.technologies.trim().startsWith('[')
-          ? JSON.parse(p.technologies).map((t: any) => t.value || t)
-          : (p.technologies || '').split(',').map((t: string) => t.trim()).filter(Boolean),
+        : (typeof p.technologies === 'string'
+            ? (p.technologies.trim().startsWith('[')
+                ? JSON.parse(p.technologies).map((t: any) => t.value || t)
+                : p.technologies.split(',').map((t: string) => t.trim()).filter(Boolean))
+            : []),
       casestudysections: p.casestudysections || [],
       categories: p.categories || [p.section, p.category].filter(Boolean) || []
     });
