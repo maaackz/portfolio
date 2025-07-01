@@ -133,7 +133,7 @@ export default function HomePageCMS() {
 
   return (
     <div id="body">
-      <Navbar active="work" />
+      <Navbar />
       <Effects />
       <main>
         <section id="hero">
