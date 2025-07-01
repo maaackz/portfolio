@@ -95,7 +95,7 @@ interface Project {
   slug: string;
   description?: string;
   image?: string;
-  technologies?: string[];
+  technologies?: string | string[];
   link?: string;
   casestudysections?: { title: string; description: string; image?: string }[];
   categories?: string[];
