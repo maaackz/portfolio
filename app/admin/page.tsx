@@ -14,11 +14,11 @@ const cardStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '0.5em',
-};
+} as React.CSSProperties;
 const cardHover = {
   boxShadow: '0 4px 24px #fff3',
   border: '1.5px solid white',
-};
+} as React.CSSProperties;
 const labelStyle = { fontWeight: 600, marginBottom: 4, color: 'white', letterSpacing: '-0.02em' };
 const inputStyle = {
   padding: '0.7em 1.2em',
@@ -31,7 +31,7 @@ const inputStyle = {
   outline: 'none',
   width: '100%',
   letterSpacing: '-0.02em',
-};
+} as React.CSSProperties;
 const buttonStyle = {
   padding: '0.7em 1.5em',
   border: '2px solid white',
@@ -44,23 +44,23 @@ const buttonStyle = {
   marginTop: '0.5em',
   transition: 'background 0.2s, color 0.2s, border 0.2s',
   letterSpacing: '-0.03em',
-};
+} as React.CSSProperties;
 const buttonHover = {
   background: 'white',
   color: 'black',
   border: '2px solid black',
-};
+} as React.CSSProperties;
 const deleteButtonStyle = {
   ...buttonStyle,
   background: '#222',
   border: '2px solid #888',
   color: '#fff',
-};
+} as React.CSSProperties;
 const deleteButtonHover = {
   background: 'white',
   color: '#222',
   border: '2px solid #222',
-};
+} as React.CSSProperties;
 const tagStyle = {
   background: '#111',
   color: 'white',
@@ -69,7 +69,7 @@ const tagStyle = {
   fontSize: '0.95em',
   border: '1px solid #fff2',
   letterSpacing: '-0.02em',
-};
+} as React.CSSProperties;
 
 function TabButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
@@ -85,7 +85,7 @@ function TabButton({ active, onClick, children }: { active: boolean; onClick: ()
       boxShadow: active ? '0 2px 12px #fff2' : 'none',
       transition: 'all 0.2s',
       letterSpacing: '-0.03em',
-    }} onClick={onClick}>{children}</button>
+    } as React.CSSProperties} onClick={onClick}>{children}</button>
   );
 }
 
@@ -149,15 +149,15 @@ function TagInput({ value, onChange, placeholder }: { value: string[]; onChange:
   };
 
   return (
-    <div style={{ ...inputStyle, background: '#111', color: 'white', border: '1.5px solid #888', minHeight: 'auto', padding: '0.5em' }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3em', marginBottom: '0.5em' }}>
+    <div style={{ ...inputStyle, background: '#111', color: 'white', border: '1.5px solid #888', minHeight: 'auto', padding: '0.5em' } as React.CSSProperties}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3em', marginBottom: '0.5em' } as React.CSSProperties}>
         {tags.map((tag, index) => (
-          <span key={index} style={{ ...tagStyle, display: 'flex', alignItems: 'center', gap: '0.3em' }}>
+          <span key={index} style={{ ...tagStyle, display: 'flex', alignItems: 'center', gap: '0.3em' } as React.CSSProperties}>
             {tag}
             <button
               type="button"
               onClick={() => removeTag(tag)}
-              style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '0.8em', padding: '0 0.2em' }}
+              style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '0.8em', padding: '0 0.2em' } as React.CSSProperties}
             >
               ×
             </button>
@@ -171,7 +171,7 @@ function TagInput({ value, onChange, placeholder }: { value: string[]; onChange:
         onKeyDown={handleKeyDown}
         onBlur={() => addTag(inputValue)}
         placeholder={placeholder || "Type and press Enter or comma to add tags"}
-        style={{ background: 'transparent', border: 'none', color: 'white', outline: 'none', width: '100%', fontSize: '1em' }}
+        style={{ background: 'transparent', border: 'none', color: 'white', outline: 'none', width: '100%', fontSize: '1em' } as React.CSSProperties}
       />
     </div>
   );
@@ -475,7 +475,7 @@ export default function PageEditor() {
             {projects.map((p, idx) => (
               <div
                 key={p.id || p.slug}
-                style={hovered === idx ? { ...cardStyle, ...cardHover } : cardStyle}
+                style={(hovered === idx ? { ...cardStyle, ...cardHover } : cardStyle) as React.CSSProperties}
                 onMouseEnter={() => setHovered(idx)}
                 onMouseLeave={() => setHovered(null)}
               >
@@ -488,9 +488,11 @@ export default function PageEditor() {
                 </div>
                 <div style={{ margin: '0.5em 0', color: '#bbb' }}>{p.description}</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5em', marginBottom: '0.5em' }}>
-                  {(p.technologies || []).map((t, i) => (
+                  {Array.isArray(p.technologies) ? p.technologies.map((t, i) => (
                     <span key={i} style={tagStyle}>{t}</span>
-                  ))}
+                  )) : typeof p.technologies === 'string' && p.technologies ? p.technologies.split(',').map((t, i) => (
+                    <span key={i} style={tagStyle}>{t.trim()}</span>
+                  )) : null}
                 </div>
                 <div>
                   <button
@@ -522,7 +524,7 @@ export default function PageEditor() {
               <input name="image" value={projectForm.image || ''} onChange={handleProjectFormChange} style={inputStyle} placeholder="Image URL" />
               <label style={labelStyle}>Technologies</label>
               <TagInput
-                value={projectForm.technologies || []}
+                value={Array.isArray(projectForm.technologies) ? projectForm.technologies : typeof projectForm.technologies === 'string' && projectForm.technologies ? projectForm.technologies.split(',').map(t => t.trim()) : []}
                 onChange={(tags) => setProjectForm(f => ({ ...f, technologies: tags }))}
                 placeholder="Add technologies..."
               />
