@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://maaackz.com/sitemap.xml
+
+# Disallow admin area
+Disallow: /admin
+
+# Allow all other content
+Allow: /projects/
+Allow: /images/
+Allow: /assets/ 
