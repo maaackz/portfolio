@@ -112,6 +112,8 @@ interface Section {
   content?: string;
 }
 
+type ProjectInsert = Omit<Project, 'id'> & { id?: string };
+
 // Custom Tag Input Component
 function TagInput({ value, onChange, placeholder }: { value: string[]; onChange: (tags: string[]) => void; placeholder?: string }) {
   const [inputValue, setInputValue] = useState('');
@@ -315,7 +317,7 @@ export default function PageEditor() {
     
     console.log('Final body:', body);
     
-    const { data, error } = await supabase.from<Project>('projects').upsert(body, { onConflict: 'id' });
+    const { data, error } = await supabase.from('projects').upsert([body], { onConflict: 'id' });
     
     if (error) {
       console.error('Supabase error:', error);
