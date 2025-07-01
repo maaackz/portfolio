@@ -6,7 +6,7 @@ import Effects from '../components/Effects';
 import ProjectCard from '../components/ProjectCard';
 import CategoryFilter from '../components/CategoryFilter';
 import { copyText as copyEmail, setupReveal } from '../components/homeUtils';
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '@/lib/supabaseClient';
 import './globals.css';
 
 // Types for Supabase data
