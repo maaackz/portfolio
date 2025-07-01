@@ -282,7 +282,7 @@ export default function PageEditor() {
                 : p.technologies.split(',').map((t: string) => t.trim()).filter(Boolean))
             : []),
       casestudysections: p.casestudysections || [],
-      categories: p.categories || [p.section, p.category].filter(Boolean) || []
+      categories: p.categories || []
     });
   };
 
