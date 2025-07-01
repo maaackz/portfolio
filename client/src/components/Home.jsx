@@ -6,7 +6,6 @@ import CategoryFilter from '../components/CategoryFilter';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import Effects from './Effects';
-import SEOHead from './SEOHead';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function HomePageCMS() {
@@ -139,27 +138,6 @@ export default function HomePageCMS() {
 
   return (
     <div id="body">
-      <SEOHead 
-        title="Creative Developer & Designer Portfolio"
-        description="20-year-old creative developer and designer from California. Specializing in web development, UI/UX design, and creating innovative digital experiences. View my portfolio of projects."
-        keywords="web developer, designer, portfolio, California, creative developer, UI/UX, frontend developer, React, JavaScript, CSS, HTML, web design, digital design"
-        url="https://maaackz.com"
-        structuredData={{
-          "@context": "https://schema.org",
-          "@type": "Person",
-          "name": "Maaackz",
-          "jobTitle": "Creative Developer & Designer",
-          "description": "20-year-old creative developer and designer from California specializing in web development and UI/UX design",
-          "url": "https://maaackz.com",
-          "sameAs": ["https://github.com/maaackz"],
-          "knowsAbout": ["Web Development", "UI/UX Design", "React", "JavaScript", "CSS", "HTML", "Creative Design"],
-          "address": {
-            "@type": "PostalAddress",
-            "addressRegion": "California",
-            "addressCountry": "US"
-          }
-        }}
-      />
       <Navbar active="work" />
       <Effects />
 
