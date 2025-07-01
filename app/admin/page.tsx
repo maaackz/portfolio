@@ -317,7 +317,9 @@ export default function PageEditor() {
     
     console.log('Final body:', body);
     
-    const { data, error } = await supabase.from('projects').upsert([body], { onConflict: 'id' });
+    const result = await supabase.from('projects').upsert([body], { onConflict: 'id' });
+    const data = result.data as Project[] | null;
+    const error = result.error;
     
     if (error) {
       console.error('Supabase error:', error);
