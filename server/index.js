@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import session from 'express-session';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
+import { generateSitemap } from './sitemap.js';
 dotenv.config();
 
 // Fix __dirname in ES module
@@ -23,8 +24,11 @@ const structureFile = path.join(dataDir, 'structure.json');
 const tagsFile = path.join(dataDir, 'tags.json');
 const availabilityFile = path.join(dataDir, 'availability.json');
 
-const ADMIN_USER = 'admin';
-const ADMIN_PASS_HASH_FILE = path.join(dataDir, 'admin_pass.hash');
+// Use Render Secret File if available
+const renderSecretPath = '/etc/secrets/admin_pass.hash';
+const ADMIN_PASS_HASH_FILE = fs.existsSync(renderSecretPath)
+  ? renderSecretPath
+  : path.join(dataDir, 'admin_pass.hash');
 
 const SESSION_SECRET = process.env.SESSION_SECRET || 'your-secret-key-change-in-production';
 if (!SESSION_SECRET) {
@@ -287,6 +291,20 @@ app.post('/api/availability', (req, res) => {
 // Add a test endpoint to check if server is working
 app.get('/api/test', (req, res) => {
   res.json({ message: 'Server is working!', session: req.session });
+});
+
+// SEO endpoints
+app.get('/sitemap.xml', (req, res) => {
+  res.setHeader('Content-Type', 'application/xml');
+  res.send(generateSitemap());
+});
+
+app.get('/robots.txt', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
+  res.send(`User-agent: *
+Allow: /
+
+Sitemap: https://maaackz.com/sitemap.xml`);
 });
 
 // Serve static files from the React app build directory
