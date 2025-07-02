@@ -182,6 +182,7 @@ export default function PageEditor() {
   const [tab, setTab] = useState<'projects' | 'sections' | 'pages'>('projects');
   const [hovered, setHovered] = useState<number | null>(null);
   const [hoveredBtn, setHoveredBtn] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // --- Projects State ---
   const [projects, setProjects] = useState<Project[]>([]);
@@ -219,27 +220,53 @@ export default function PageEditor() {
 
   // --- Effects ---
   useEffect(() => {
-    if (!authenticated) return;
+    // Set loading to false after a short delay to prevent redirect loops
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!authenticated || isLoading) return;
     if (tab === 'projects') {
-      supabase.from('projects').select('*').then(({ data, error }) => {
-        if (!error && data) setProjects(data);
-      });
+      const fetchProjects = async () => {
+        try {
+          const { data, error } = await supabase.from('projects').select('*');
+          if (!error && data) setProjects(data);
+        } catch (err) {
+          console.error('Error fetching projects:', err);
+        }
+      };
+      fetchProjects();
     }
-  }, [tab, authenticated]);
+  }, [tab, authenticated, isLoading]);
 
   useEffect(() => {
-    if (!authenticated) return;
-    supabase.from('availability').select('*').single().then(({ data, error }) => {
-      if (!error && data) setAvailability(data);
-    });
-  }, [authenticated]);
+    if (!authenticated || isLoading) return;
+    const fetchAvailability = async () => {
+      try {
+        const { data, error } = await supabase.from('availability').select('*').single();
+        if (!error && data) setAvailability(data);
+      } catch (err) {
+        console.error('Error fetching availability:', err);
+      }
+    };
+    fetchAvailability();
+  }, [authenticated, isLoading]);
 
   useEffect(() => {
-    if (!authenticated) return;
-    supabase.from('sections').select('*').then(({ data, error }) => {
-      if (!error && data) setAvailableSections(data);
-    });
-  }, [authenticated]);
+    if (!authenticated || isLoading) return;
+    const fetchSections = async () => {
+      try {
+        const { data, error } = await supabase.from('sections').select('*');
+        if (!error && data) setAvailableSections(data);
+      } catch (err) {
+        console.error('Error fetching sections:', err);
+      }
+    };
+    fetchSections();
+  }, [authenticated, isLoading]);
 
   // --- Auth ---
   const handleLogin = (e: React.FormEvent) => {
