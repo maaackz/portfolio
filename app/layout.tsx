@@ -65,11 +65,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <meta name="google-site-verification" content="wE-3XvMCAShivHuNRFzGKIfudryPdRYfahPOc1xp5mk" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-7J16L9NCFM"
           strategy="afterInteractive"
@@ -82,6 +77,11 @@ export default function RootLayout({
             gtag('config', 'G-7J16L9NCFM');
           `}
         </Script>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <meta name="google-site-verification" content="wE-3XvMCAShivHuNRFzGKIfudryPdRYfahPOc1xp5mk" />
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
