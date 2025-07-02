@@ -55,10 +55,10 @@ h1,h2,h3,h4,h5,h6,p,li,button,.squiggly {
 
 /* Disable squiggly animations on mobile for better performance */
 @media (max-width: 768px) {
-    h1,h2,h3,h4,h5,h6,p,li,button,.squiggly {
+    /* h1,h2,h3,h4,h5,h6,p,li,button,.squiggly {
         animation: none !important;
         will-change: auto;
-    }
+    } */
     
     /* Only disable hover effects on actual mobile devices */
     @media (hover: none) and (pointer: coarse) {
