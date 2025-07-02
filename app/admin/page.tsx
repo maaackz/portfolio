@@ -268,19 +268,60 @@ export default function PageEditor() {
     fetchSections();
   }, [authenticated, isLoading]);
 
+  // Check authentication status on component mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/login', { 
+          method: 'GET',
+          credentials: 'include'
+        });
+        if (response.ok) {
+          setAuthenticated(true);
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+      }
+    };
+    
+    checkAuth();
+  }, []);
+
   // --- Auth ---
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
-    // TODO: Replace with Supabase Auth
-    if (loginForm.username === 'admin' && loginForm.password === 'password') {
-      setAuthenticated(true);
-    } else {
-      setLoginError('Invalid credentials');
+    
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginForm),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setAuthenticated(true);
+      } else {
+        setLoginError(data.error || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setLoginError('Network error. Please try again.');
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/login', {
+        method: 'DELETE',
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
     setAuthenticated(false);
   };
 
