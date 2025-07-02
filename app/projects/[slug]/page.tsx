@@ -98,7 +98,7 @@ export default function ProjectPage() {
               </div>
             )}
             {project.link && (
-              <a className="project-case-demo squiggly" href={project.link} target="_blank" rel="noopener noreferrer">live demo / link to site 197</a>
+              <a className="project-case-demo squiggly" href={project.link} target="_blank" rel="noopener noreferrer">live demo / link to site</a>
             )}
           </div>
         </div>

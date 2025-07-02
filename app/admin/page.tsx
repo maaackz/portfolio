@@ -233,7 +233,7 @@ export default function PageEditor() {
       const fetchProjects = async () => {
         try {
           const { data, error } = await supabase.from('projects').select('*');
-          if (!error && data) setProjects(data);
+        if (!error && data) setProjects(data);
         } catch (err) {
           console.error('Error fetching projects:', err);
         }
@@ -247,7 +247,7 @@ export default function PageEditor() {
     const fetchAvailability = async () => {
       try {
         const { data, error } = await supabase.from('availability').select('*').single();
-        if (!error && data) setAvailability(data);
+      if (!error && data) setAvailability(data);
       } catch (err) {
         console.error('Error fetching availability:', err);
       }
@@ -260,7 +260,7 @@ export default function PageEditor() {
     const fetchSections = async () => {
       try {
         const { data, error } = await supabase.from('sections').select('*');
-        if (!error && data) setAvailableSections(data);
+      if (!error && data) setAvailableSections(data);
       } catch (err) {
         console.error('Error fetching sections:', err);
       }
@@ -304,8 +304,8 @@ export default function PageEditor() {
       const data = await response.json();
 
       if (response.ok) {
-        setAuthenticated(true);
-      } else {
+      setAuthenticated(true);
+    } else {
         setLoginError(data.error || 'Login failed');
       }
     } catch (error) {
@@ -348,7 +348,7 @@ export default function PageEditor() {
         ? p.technologies
         : (typeof p.technologies === 'string' && p.technologies
             ? (p.technologies.trim().startsWith('[')
-                ? JSON.parse(p.technologies).map((t: any) => t.value || t)
+          ? JSON.parse(p.technologies).map((t: any) => t.value || t)
                 : p.technologies.split(',').map((t: string) => t.trim()).filter(Boolean))
             : []),
       casestudysections: p.casestudysections || [],
