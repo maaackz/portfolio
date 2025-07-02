@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-// Load environment variables manually for development
+// Load environment variables manually for development only
 if (process.env.NODE_ENV === 'development' && !process.env.ADMIN_PASSWORD_HASH) {
   try {
     const envPath = join(process.cwd(), '.env.local');
@@ -18,7 +18,10 @@ if (process.env.NODE_ENV === 'development' && !process.env.ADMIN_PASSWORD_HASH) 
       }
     }
   } catch (error) {
-    console.log('Could not load .env.local manually:', error.message);
+    // Silently ignore in production builds
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Could not load .env.local manually:', error instanceof Error ? error.message : 'Unknown error');
+    }
   }
 }
 
