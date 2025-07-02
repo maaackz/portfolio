@@ -1,9 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 // Load environment variables manually for development
-if (process.env.NODE_ENV === 'development') {
-  require('dotenv').config({ path: '.env.local' });
+if (process.env.NODE_ENV === 'development' && !process.env.ADMIN_PASSWORD_HASH) {
+  try {
+    const envPath = join(process.cwd(), '.env.local');
+    const envContent = readFileSync(envPath, 'utf8');
+    const envLines = envContent.split('\n');
+    
+    for (const line of envLines) {
+      const [key, ...valueParts] = line.split('=');
+      if (key === 'ADMIN_PASSWORD_HASH' && valueParts.length > 0) {
+        process.env.ADMIN_PASSWORD_HASH = valueParts.join('=').trim();
+        break;
+      }
+    }
+  } catch (error) {
+    console.log('Could not load .env.local manually:', error.message);
+  }
 }
 
 export async function POST(request: NextRequest) {
