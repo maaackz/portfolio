@@ -102,7 +102,7 @@ body {
     color: white;
     overflow: hidden;
     /* Performance optimization */
-    transform: translateZ(0);
+    /* transform: translateZ(0); */ /* Removed for fixed header compatibility */
     /* transition: 0.75s -webkit-filter ease-out;
     transition: 0.75s filter ease-out;
     -webkit-filter: blur(25px);
@@ -119,8 +119,8 @@ header {
     align-items: center;
     top: 0;
     z-index: 999;
-    padding-left: 5vw;
-    padding-right: 5vw;
+    /* padding-left: 5vw; */
+    /* padding-right: 5vw; */
 }
 
 ul {
@@ -798,12 +798,17 @@ footer p {
         
     }
 
+    @media only screen and (min-width: 1200px) {
     header {
         display: flex;
+        position: fixed;
         justify-content: left;
         height: auto;
+        width: 100vw !important;
         align-items: start;
+        padding-left: 2vw;
     }
+}
 
     .link {
         font-size: var(--font-size-big)
